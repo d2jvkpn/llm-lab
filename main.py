@@ -125,11 +125,14 @@ view = gr.Interface(
     #description="......",
     fn=message_gpt,
     inputs=[
-        gr.Textbox(label=f"LLM parameters(yaml format)", value=parameters.strip(), max_lines=5),
-        gr.Textbox(label=f"System prompt", value=system_prompt, lines=5),
+        gr.Textbox(
+            label=f"LLM parameters(yaml format)", value=parameters.strip(),
+            lines=5, max_lines=8,
+        ),
+        gr.Textbox(label=f"System prompt", value=system_prompt, lines=5, max_lines=8),
         gr.Dropdown(model_choices, label="Select a model", value=model_choices[0]),
         gr.Dropdown(prompt_funcs_keys, label="Function to call", value=prompt_funcs_keys[0]),
-        gr.Textbox(label=f"Input", lines=3),
+        gr.Textbox(label=f"Input", lines=3, max_lines=8),
     ],
     outputs=[
         gr.Textbox(label="Response", lines=30),
