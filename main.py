@@ -54,10 +54,7 @@ print(f"--> Imported prompt_funcs: {prompt_funcs_keys}")
 
 def call_llm(selected_model, messages, parameters):
     provider, model = selected_model.split("/", 1)
-
-    print("--> call_llm: provider={}, model={}, temperature={}, max_tokens={}".format(
-        provider, model, parameters['temperature'], parameters['max_tokens'],
-    ))
+    print(f"--> call_llm: provider={provider}, model={model}, parameters={parameters}")
 
     found = next(
         (v for v in config['llm_models'] if v['provider'] == provider and v['model'] == model),

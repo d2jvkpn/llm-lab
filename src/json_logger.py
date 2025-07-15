@@ -12,7 +12,7 @@ class JSONLogger(gr.FlaggingCallback):
         self.keys = keys
 
         self.log_dir.mkdir(exist_ok=True)
-        self.filepath = self.log_dir / "flagging.jsonl"
+        self.filepath = self.log_dir / f"flagging.{datetime.now().strftime('%F')}.jsonl"
         self.file = None
 
     def setup(self, components, flagging_options):
