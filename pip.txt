@@ -1,0 +1,5 @@
+pyyaml
+litellm
+gradio
+requests
+beautifulsoup4

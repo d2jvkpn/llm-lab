@@ -1,0 +1,22 @@
+# path: configs/local.yaml
+
+llm_models:
+- provider: alibaba
+  model: qwen-plus
+  api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: sk-xxxxxxxx
+  hosted_vllm: true
+
+- provider: deepseek
+  model: deepseek-chat
+  api_base: https://api.deepseek.com
+  api_key: sk-xxxxxxxx
+
+- provider: ollama
+  model: deepseek-r1:8b
+  api_base: http://localhost:11434
+
+- provider: openai
+  model: gpt-4o
+  api_base: https://api.openai.com/v1
+  api_key: sk-xxxxxxxx
