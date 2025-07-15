@@ -28,7 +28,7 @@ class JSONLogger(gr.FlaggingCallback):
         record = {"timestamp": timestamp}
 
         if flag_option is not None:
-            record["flag"] = flag_option
+            record["flag"] = flag_option.lower()
 
         for i, k in enumerate(self.keys):
             record[k] = flag_data[i]

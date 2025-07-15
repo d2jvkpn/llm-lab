@@ -127,15 +127,18 @@ view = gr.Interface(
     inputs=[
         gr.Textbox(
             label=f"LLM parameters(yaml format)", value=parameters.strip(),
-            lines=5, max_lines=8,
+            lines=4, max_lines=8,
         ),
-        gr.Textbox(label=f"System prompt", value=system_prompt, lines=5, max_lines=8),
+        gr.Textbox(label=f"System prompt", value=system_prompt, lines=6, max_lines=10),
         gr.Dropdown(model_choices, label="Select a model", value=model_choices[0]),
-        gr.Dropdown(prompt_funcs_keys, label="Function to call", value=prompt_funcs_keys[0]),
-        gr.Textbox(label=f"Input", lines=3, max_lines=8),
+        gr.Dropdown(
+            prompt_funcs_keys, label="Function to call(prompts/*.py)",
+            value=prompt_funcs_keys[0],
+        ),
+        gr.Textbox(label=f"Input", lines=2, max_lines=8),
     ],
     outputs=[
-        gr.Textbox(label="Response", lines=30),
+        gr.Textbox(label="Response", lines=28),
     ],
     flagging_mode="manual",         # never, auto, manual
     flagging_options=["No", "Yes"], # only when flagging_mode == "mannual"
