@@ -23,7 +23,6 @@ class JSONLogger(gr.FlaggingCallback):
             self.file = open(self.filepath, "a", encoding="utf-8")
 
     def flag(self, flag_data, flag_option=None, username=None):
-        
         timestamp = datetime.now().astimezone().strftime("%Y-%m-%dT%H:%M:%S%:z")
         record = {"timestamp": timestamp}
 
