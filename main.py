@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, argparse, json
+import os, argparse, json # logging
 from datetime import datetime
 from pathlib import Path
 os.environ['LITELLM_LOCAL_MODEL_COST_MAP'] = "True"
@@ -11,7 +11,6 @@ from src.load_prompts import load_prompt_funcs
 
 import yaml, litellm
 import gradio as gr
-
 
 parser = argparse.ArgumentParser(
     description="parse commandline arguments",
@@ -28,6 +27,8 @@ args = parser.parse_args()
 
 with open(args.config, 'r') as f:
     config = yaml.safe_load(f)
+
+#logging.basicConfig(level=logging.DEBUG)
 
 # print("~~~ llm:", llm)
 system_prompt = "You are a helpful assistant that responds in markdown."
@@ -69,9 +70,10 @@ def call_llm(selected_model, messages, parameters):
     response = litellm.completion(
         custom_llm_provider=provider, model=model,
         api_base=found['api_base'], api_key=found.get('api_key'),
-        max_tokens=parameters['max_tokens'], temperature=parameters['temperature'],
-        num_retries=3, timeout=60, stream=True,
         messages=messages,
+        num_retries=3, timeout=60, stream=True,
+        #max_tokens=parameters['max_tokens'], temperature=parameters['temperature'],
+        **parameters,
     )
 
     return response
@@ -123,7 +125,7 @@ view = gr.Interface(
     #description="......",
     fn=message_gpt,
     inputs=[
-        gr.Textbox(label=f"LLM parameters(yaml format)", value=parameters.strip(), lines=5),
+        gr.Textbox(label=f"LLM parameters(yaml format)", value=parameters.strip(), max_lines=5),
         gr.Textbox(label=f"System prompt", value=system_prompt, lines=5),
         gr.Dropdown(model_choices, label="Select a model", value=model_choices[0]),
         gr.Dropdown(prompt_funcs_keys, label="Function to call", value=prompt_funcs_keys[0]),
