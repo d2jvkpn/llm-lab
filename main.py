@@ -42,7 +42,7 @@ max_tokens: 1000
 def chat(user_input):
     return user_input.strip()
 
-prompt_funcs = load_prompt_funcs(".")
+prompt_funcs = load_prompt_funcs("prompts")
 prompt_funcs['chat'] = chat
 
 prompt_funcs_keys = list(prompt_funcs.keys())
@@ -119,8 +119,8 @@ def message_gpt(parameters, system_prompt, selected_model, fn, user_input):
 
 
 view = gr.Interface(
-    title="LLM Lab",
-    description="......",
+    title="LLM Lab: A Web UI Built with Gradio",
+    #description="......",
     fn=message_gpt,
     inputs=[
         gr.Textbox(label=f"LLM parameters(yaml format)", value=parameters.strip(), lines=5),
@@ -133,7 +133,7 @@ view = gr.Interface(
         gr.Textbox(label="Response", lines=30),
     ],
     flagging_mode="manual",         # never, auto, manual
-    flagging_options=["no", "yes"], # only when flagging_mode == "mannual"
+    flagging_options=["No", "Yes"], # only when flagging_mode == "mannual"
     flagging_callback=JSONLogger(keys=[
         "parameters", "system_prompt", "selected_model", "fn",
         "user_input", "reply",

@@ -2,7 +2,7 @@
 import os, glob, importlib
 from typing import Dict, Callable
 
-def load_prompt_funcs(directory) -> Dict[str, Callable]:
+def load_prompt_funcs(directory="prompts") -> Dict[str, Callable]:
     prompt_functions = {}
     
     if not os.path.exists(directory):
@@ -10,25 +10,17 @@ def load_prompt_funcs(directory) -> Dict[str, Callable]:
     
     if not os.path.isdir(directory):
         raise NotADirectoryError(f"{directory} is not a diretory")
-    
-    prefix = "prompt_"
-    if directory == ".":
-        pattern = f"{prefix}*.py"
-    else:
-        pattern = os.path.join(directory, f"{prefix}*.py")
 
+    pattern = os.path.join(directory, "*.py")
     module_files = glob.glob(pattern)
     
     for filepath in module_files:
         module_name = os.path.basename(filepath)[:-3]
 
-        if directory == ".":
-            module = importlib.import_module(module_name)
-        else:
-            module = importlib.import_module(f"{directory}.{module_name}")
+        module = importlib.import_module(f"{directory}.{module_name}")
 
         if hasattr(module, "prompt"):
-            prompt_functions[module_name[len(prefix):]] = getattr(module, "prompt")
+            prompt_functions[module_name] = getattr(module, "prompt")
         else:
            err_msg = f"can't find function prompt in {filepath}"
            raise AssertionError(err_msg)
