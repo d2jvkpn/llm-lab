@@ -6,7 +6,7 @@ from datetime import datetime
 import gradio as gr
 
 
-class JSONLogger(gr.FlaggingCallback):
+class LabLogger(gr.FlaggingCallback):
     def __init__(self, keys, log_dir="logs"):
         self.log_dir = Path(log_dir)
         self.keys = keys

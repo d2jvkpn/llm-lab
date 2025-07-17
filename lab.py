@@ -4,7 +4,7 @@ import os, argparse # json, logging
 from pathlib import Path
 os.environ['LITELLM_LOCAL_MODEL_COST_MAP'] = "True"
 
-from src.json_logger import JSONLogger
+from src.loggers import LabLogger
 from src import llm_prompts
 # from src.website import webpage_brochure
 
@@ -80,7 +80,9 @@ def call_llm(selected_model, messages, parameters):
 
 # company_brochure: https://www.apple.com/
 def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
-    system_prompt, user_input = system_prompt.strip(), user_input.strip()
+    system_prompt = system_prompt.strip()
+    user_input = user_input.strip()
+
     if not user_input:
         yield "no input!"
         return
@@ -91,9 +93,7 @@ def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
         yield f"read parameters error: {e}"
         return
 
-    messages = []
-    if system_prompt != "":
-        messages.append({ "role": "system", "content": system_prompt })
+    messages = [{ "role": "system", "content": system_prompt }]
 
     try:
         prompt = prompt_funcs[fn.strip()](user_input)
@@ -132,7 +132,7 @@ view = gr.Interface(
             lines=4, max_lines=8,
         ),
         gr.Dropdown(
-            prompt_funcs_keys, label="User prompt(prompts/*.py)",
+            prompt_funcs_keys, label="User prompt(llm_prompts/*.py)",
             value=prompt_funcs_keys[0],
         ),
         gr.Textbox(label="Input", lines=2, max_lines=8),
@@ -142,8 +142,8 @@ view = gr.Interface(
     ],
     flagging_mode="manual",         # never, auto, manual
     flagging_options=["No", "Yes"], # only when flagging_mode == "mannual"
-    flagging_callback=JSONLogger(keys=[
-        "system_prompt", "selected_model", "parameters", "fn",
+    flagging_callback=LabLogger(keys=[
+        "system_prompt", "selected_model", "yaml_text", "fn",
         "user_input", "reply",
     ]),
 )

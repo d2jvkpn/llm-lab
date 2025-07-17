@@ -1,5 +1,8 @@
 # path: configs/local.yaml
 
+local:
+  venv: /home/evol/apps/home.venv
+
 llm_models:
 - provider: alibaba
   model: qwen-plus
