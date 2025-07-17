@@ -55,7 +55,9 @@ print(f"--> Imported prompt_funcs: {prompt_funcs_keys}")
 #### 3.
 def call_llm(selected_model, messages, parameters):
     provider, model = selected_model.split("/", 1)
-    print(f"--> call_llm: provider={provider}, model={model}, parameters={parameters}")
+    print("--> call_llm: provider={}, model={}, parameters={}, content: {}".format(
+        provider, model, parameters, repr(messages[-1]['content']),
+    ))
 
     found = next(
         (v for v in config['llm_models'] if v['provider'] == provider and v['model'] == model),
@@ -77,14 +79,14 @@ def call_llm(selected_model, messages, parameters):
 
 
 # company_brochure: https://www.apple.com/
-def message_gpt(system_prompt, selected_model, parameters, fn, user_input):
+def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
     system_prompt, user_input = system_prompt.strip(), user_input.strip()
     if not user_input:
         yield "no input!"
         return
 
     try:
-        parameters = yaml.safe_load(parameters)
+        parameters = yaml.safe_load(yaml_text)
     except Exception as e:
         yield f"read parameters error: {e}"
         return
