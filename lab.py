@@ -93,7 +93,9 @@ def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
         yield f"read parameters error: {e}"
         return
 
-    messages = [{ "role": "system", "content": system_prompt }]
+    messages = []
+    if system_prompt:
+        messages.append({ "role": "system", "content": system_prompt })
 
     try:
         prompt = prompt_funcs[fn.strip()](user_input)
