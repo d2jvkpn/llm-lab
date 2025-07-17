@@ -79,7 +79,7 @@ def call_llm(selected_model, messages, parameters):
 
 
 # company_brochure: https://www.apple.com/
-def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
+def message_gpt(system_prompt, selected_model, yaml_text, selected_prompt, user_input):
     system_prompt = system_prompt.strip()
     user_input = user_input.strip()
 
@@ -98,7 +98,7 @@ def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
         messages.append({ "role": "system", "content": system_prompt })
 
     try:
-        prompt = prompt_funcs[fn.strip()](user_input)
+        prompt = prompt_funcs[selected_prompt.strip()](user_input)
     except Exception as e:
         yield f"generate prompt error: {e}"
         return
@@ -122,22 +122,37 @@ def message_gpt(system_prompt, selected_model, yaml_text, fn, user_input):
 
 
 ### 4.
+system_prompt_input = gr.Textbox(
+    label="System prompt", lines=6, max_lines=10, value=system_prompt,
+)
+
+model_selector = gr.Dropdown(
+    model_choices, label="Select a model", value=model_choices[0],
+)
+
+yaml_input = gr.Textbox(
+    label="LLM parameters(yaml format)", value=parameters.strip(),
+    lines=4, max_lines=8,
+)
+
+prompt_selector = gr.Dropdown(
+    prompt_funcs_keys, label="User prompt(llm_prompts/*.py)",
+    value=prompt_funcs_keys[0],
+)
+
+user_input = gr.Textbox(label="Input", lines=2, max_lines=8)
+
+
 view = gr.Interface(
     title="LLM Lab: A Web UI Built with Gradio",
     #description="......",
     fn=message_gpt,
     inputs=[
-        gr.Textbox(label="System prompt", value=system_prompt, lines=6, max_lines=10),
-        gr.Dropdown(model_choices, label="Select a model", value=model_choices[0]),
-        gr.Textbox(
-            label="LLM parameters(yaml format)", value=parameters.strip(),
-            lines=4, max_lines=8,
-        ),
-        gr.Dropdown(
-            prompt_funcs_keys, label="User prompt(llm_prompts/*.py)",
-            value=prompt_funcs_keys[0],
-        ),
-        gr.Textbox(label="Input", lines=2, max_lines=8),
+        system_prompt_input,
+        model_selector,
+        yaml_input,
+        prompt_selector,
+        user_input,
     ],
     outputs=[
         gr.Textbox(label="Response", lines=28),
@@ -145,7 +160,7 @@ view = gr.Interface(
     flagging_mode="manual",         # never, auto, manual
     flagging_options=["No", "Yes"], # only when flagging_mode == "mannual"
     flagging_callback=LabLogger(keys=[
-        "system_prompt", "selected_model", "yaml_text", "fn",
+        "system_prompt", "selected_model", "yaml_text", "selected_prompt",
         "user_input", "reply",
     ]),
 )

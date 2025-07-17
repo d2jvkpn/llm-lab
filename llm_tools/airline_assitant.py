@@ -22,15 +22,15 @@ definiton = {
     }
 }
 
+ticket_prices = {
+    "london": "$799",
+    "paris": "$899",
+    "tokyo": "$1400",
+    "berlin": "$499",
+}
+
 def assistant(destination_city):
     #print(f"<-- get_ticket_price: {destination_city}")
-    ticket_prices = {
-        "london": "$799",
-        "paris": "$899",
-        "tokyo": "$1400",
-        "berlin": "$499",
-    }
-
     price = ticket_prices.get(destination_city.lower(), "unknown")
 
     return { "destination_city": destination_city, "price": price }
