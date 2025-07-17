@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import os, argparse, json # logging
-from datetime import datetime
+import os, argparse # json, logging
+# from datetime import datetime
 from pathlib import Path
 os.environ['LITELLM_LOCAL_MODEL_COST_MAP'] = "True"
 
 from src.json_logger import JSONLogger
-from src.load_prompts import load_prompt_funcs
-
+from src import llm_prompts
 # from src.website import webpage_brochure
 
 import yaml, litellm
@@ -40,15 +39,12 @@ temperature: 0.7
 max_tokens: 1000
 """
 
-def chat(user_input):
-    return user_input.strip()
-
-prompt_funcs = load_prompt_funcs("prompts")
-prompt_funcs['chat'] = chat
+prompt_funcs = llm_prompts.load("llm_prompts")
+prompt_funcs['default'] = lambda user_input: user_input.strip()
 
 prompt_funcs_keys = list(prompt_funcs.keys())
-prompt_funcs_keys.remove("chat")
-prompt_funcs_keys.insert(0, "chat")
+prompt_funcs_keys.remove("default")
+prompt_funcs_keys.insert(0, "default")
 print(f"--> Imported prompt_funcs: {prompt_funcs_keys}")
 
 
@@ -123,16 +119,16 @@ view = gr.Interface(
     fn=message_gpt,
     inputs=[
         gr.Textbox(
-            label=f"LLM parameters(yaml format)", value=parameters.strip(),
+            label="LLM parameters(yaml format)", value=parameters.strip(),
             lines=4, max_lines=8,
         ),
-        gr.Textbox(label=f"System prompt", value=system_prompt, lines=6, max_lines=10),
+        gr.Textbox(label="System prompt", value=system_prompt, lines=6, max_lines=10),
         gr.Dropdown(model_choices, label="Select a model", value=model_choices[0]),
         gr.Dropdown(
-            prompt_funcs_keys, label="Function to call(prompts/*.py)",
+            prompt_funcs_keys, label="User prompt(prompts/*.py)",
             value=prompt_funcs_keys[0],
         ),
-        gr.Textbox(label=f"Input", lines=2, max_lines=8),
+        gr.Textbox(label="Input", lines=2, max_lines=8),
     ],
     outputs=[
         gr.Textbox(label="Response", lines=28),

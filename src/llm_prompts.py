@@ -2,7 +2,8 @@
 import os, glob, importlib
 from typing import Dict, Callable
 
-def load_prompt_funcs(directory="prompts") -> Dict[str, Callable]:
+
+def load(directory="llm_prompts") -> Dict[str, Callable]:
     prompt_functions = {}
     
     if not os.path.exists(directory):
@@ -15,12 +16,11 @@ def load_prompt_funcs(directory="prompts") -> Dict[str, Callable]:
     module_files = glob.glob(pattern)
     
     for filepath in module_files:
-        module_name = os.path.basename(filepath)[:-3]
-
-        module = importlib.import_module(f"{directory}.{module_name}")
+        name = os.path.basename(filepath)[:-3]
+        module = importlib.import_module(f"{directory}.{name}")
 
         if hasattr(module, "prompt"):
-            prompt_functions[module_name] = getattr(module, "prompt")
+            prompt_functions[name] = getattr(module, "prompt")
         else:
            err_msg = f"can't find function prompt in {filepath}"
            raise AssertionError(err_msg)
